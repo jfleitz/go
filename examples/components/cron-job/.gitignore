@@ -1,0 +1,4 @@
+build/
+
+# Fetched by `wash wit fetch` (which `wash build` runs).
+wit/deps/

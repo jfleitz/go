@@ -1,0 +1,22 @@
+build:
+  # `-w` pins the world to this component's own. Without it componentize-go
+  # merges in the default world of every componentize-go.toml in the module
+  # graph, and the go.bytecodealliance.org/pkg one mandates a
+  # wasi:http/incoming-handler export this job does not have.
+  command: go tool componentize-go -w 'wasmcloud:examples/cron-job@0.1.0' build -o build/cron_job.wasm
+  component_path: build/cron_job.wasm
+
+dev:
+  # The one line that makes this work under `wash dev`. By default wash dev
+  # deploys what it builds as a request-driven *component*, and the host only
+  # calls `wasi:cli/run` on a workload's *service*, so without this the job
+  # builds, deploys, and never runs.
+  service: true
+
+workload:
+  environment:
+    config:
+      # Every 10 seconds, so there is something to watch in dev. The optional
+      # leading seconds field is accepted; five-field expressions and
+      # descriptors like @hourly or @every 1m work too.
+      CRON_SCHEDULE: "*/10 * * * * *"

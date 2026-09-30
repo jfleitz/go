@@ -1,0 +1,20 @@
+package wasmcloud:examples@0.1.0;
+
+// A scheduled job, run by the host as a wasmCloud *service*.
+//
+// There is no HTTP handler here, so this world does not build on the SDK's
+// wasip2 world (which exports wasi:http/incoming-handler). It carries only
+// what the job needs:
+//
+//   - `wasi:cli/imports` is what the Go runtime itself needs: clocks for the
+//     schedule, the environment for CRON_SCHEDULE, stdio, random.
+//   - `wasi:logging` is where the job's log lines go.
+//   - `wasi:cli/run` is the export the host calls once, when the service
+//     starts. The job's loop lives inside it and never returns.
+world cron-job {
+  include wasi:cli/imports@0.2.8;
+
+  import wasi:logging/logging@0.1.0-draft;
+
+  export wasi:cli/run@0.2.8;
+}

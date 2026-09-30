@@ -1,0 +1,5 @@
+# This component's own world. The build pins it with `-w` (see
+# .wash/config.yaml), which also stops componentize-go merging in the default
+# worlds of the dependencies' componentize-go.toml files.
+worlds = ["wasmcloud:examples/cron-job@0.1.0"]
+wit_paths = ["wit"]

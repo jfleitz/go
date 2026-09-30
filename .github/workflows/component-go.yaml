@@ -125,6 +125,12 @@ jobs:
               nats kv add feature-flags --history 5
             test-command: nats kv put feature-flags flag.dark-mode on >/dev/null && sleep 2 && test "$(nats kv get feature-flags active --raw)" = "dark-mode"
 
+          # No HTTP: a service that runs on its own schedule (every 10s in
+          # dev), so the assertion is that a run has finished, read from the
+          # dev session's log.
+          - folder: cron-job
+            test-command: grep -q 'job finished' wash-dev.log
+
           # Build-only: this example is two components in two `wash dev`
           # sessions (the gateway fronts the service over NATS), which the
           # single-component harness below cannot express. Exercising it needs
@@ -195,7 +201,10 @@ jobs:
         if: ${{ !matrix.example.skip-dev-test }}
         working-directory: examples/components/${{ matrix.example.folder }}
         run: |
-          wash dev --non-interactive &
+          # Teed to wash-dev.log so a test-command can assert on the log, for
+          # examples that serve no HTTP; the process substitution keeps $! on
+          # wash itself rather than on tee.
+          wash dev --non-interactive > >(tee wash-dev.log) 2>&1 &
           DEV_PID=$!
           # wash serves HTTP before the component is deployed (requests fail
           # with "no workload registered"), so waiting for the port to open is

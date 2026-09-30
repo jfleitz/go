@@ -49,6 +49,7 @@ wash dev
 | [nats-jetstream-orders](./examples/components/nats-jetstream-orders) | JetStream delivery into KV, with ack/nak and compare-and-swap | ✅ |
 | [nats-kv-watch](./examples/components/nats-kv-watch) | Watching a JetStream KV bucket and rebuilding derived state | ✅ |
 | [nats-stream-replay](./examples/components/nats-stream-replay) | JetStream replay by sequence or range, and a pull consumer you settle yourself | ✅ |
+| [cron-job](./examples/components/cron-job) | A scheduled job run as a service through `wasi:cli/run` | |
 
 The unmarked examples build as sync WASI P2 components with stock Go. The
 marked ones target the async P3 world: `http-p3-streaming` asks for it
